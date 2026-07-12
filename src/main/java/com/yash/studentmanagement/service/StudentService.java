@@ -2,6 +2,10 @@ package com.yash.studentmanagement.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.yash.studentmanagement.entity.Student;
@@ -51,5 +55,41 @@ public class StudentService
     public void deleteStudent(Integer id) 
     {
     studentRepository.deleteById(id);
+    }
+    public Page<Student> getStudents(int page, int size, String sortBy, String direction)
+    {
+    Pageable pageable = PageRequest.of(
+        page,
+        size,
+        Sort.by(Sort.Direction.fromString(direction), sortBy)
+    );
+
+    return studentRepository.findAll(pageable);
+    }
+    public List<Student> searchStudentByName(String name) 
+    {
+    return studentRepository.findByName(name);
+    }
+    public List<Student> searchStudentByNameContaining(String name) 
+    {
+    return studentRepository.findByNameContaining(name);
+    }
+    public List<Student> searchStudentByNameContainingIgnoreCase(String name) 
+    {
+    return studentRepository.findByNameContainingIgnoreCase(name);
+    }
+    public List<Student> getStudentsByAge(Integer age) 
+    {
+    return studentRepository.findByAge(age);
+    }
+
+    public List<Student> getStudentsByAgeGreaterThan(Integer age) 
+    {
+    return studentRepository.findByAgeGreaterThan(age);
+    }
+
+    public List<Student> getStudentsByAgeLessThan(Integer age) 
+    {
+    return studentRepository.findByAgeLessThan(age);
     }
 }
