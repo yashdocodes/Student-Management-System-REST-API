@@ -44,6 +44,11 @@ public class StudentController
     {
     return studentService.getStudents(page, size, sortBy, direction);
     }
+    @GetMapping
+    public List<Student> getAllStudents()
+    {
+    return studentService.getAllStudents();
+    }
     @GetMapping("/{id}")
     public Student getStudentById(@PathVariable Integer id) 
     {
@@ -92,4 +97,99 @@ public class StudentController
     {
     return studentService.getStudentsByAgeLessThan(age);
     }
+    @GetMapping("/jpql")
+    public List<Student> getAllStudentsJPQL() 
+    {
+    return studentService.getAllStudentsJPQL();
+    }
+
+    @GetMapping("/query/name")
+    public List<Student> findStudentByName(@RequestParam String name) 
+    {
+    return studentService.findStudentByName(name);
+    }  
+
+    @GetMapping("/query/search")
+    public List<Student> searchStudent(@RequestParam String keyword) 
+    {
+    return studentService.searchStudent(keyword);
+    }
+
+    @GetMapping("/query/age-greater")
+    public List<Student> findStudentsAgeGreaterThan(@RequestParam int age) 
+    {
+    return studentService.findStudentsAgeGreaterThan(age);
+    }  
+
+    @GetMapping("/query/age-less")
+    public List<Student> findStudentsAgeLessThan(@RequestParam int age) 
+    {
+    return studentService.findStudentsAgeLessThan(age);
+    }
+    @GetMapping("/query/name-position")
+    public List<Student> findStudentByNamePosition(@RequestParam String name) 
+    {
+    return studentService.findStudentByNamePosition(name);
+    }
+
+    @GetMapping("/query/order-age-desc")
+    public List<Student> getStudentsOrderByAgeDesc() 
+    {
+    return studentService.getStudentsOrderByAgeDesc();
+    }
+
+    @GetMapping("/query/count")
+    public long countStudents() 
+    {
+    return studentService.countStudents();
+    }
+
+    @GetMapping("/query/max-age")
+    public Integer getMaximumAge() 
+    {
+    return studentService.getMaximumAge();
+    }
+
+    @GetMapping("/query/min-age")
+    public Integer getMinimumAge() 
+    {
+    return studentService.getMinimumAge();
+    }
+
+    @GetMapping("/query/average-age")
+    public Double getAverageAge() 
+    {
+    return studentService.getAverageAge();
+    }
+
+    @PutMapping("/query/update-age")
+    public String updateStudentAge(@RequestParam Integer id, @RequestParam Integer age) 
+    {
+
+    int rows = studentService.updateStudentAge(id, age);
+
+    if (rows > 0) 
+    {
+        return "Student age updated successfully.";
+    }
+
+    return "Student not found.";
+    }
+
+    @DeleteMapping("/query/delete-age-less")
+    public String deleteStudentsAgeLessThan(@RequestParam Integer age) 
+    {
+
+    int rows = studentService.deleteStudentsAgeLessThan(age);
+
+    return rows + " student(s) deleted successfully.";
+    }
+
+    @PutMapping("/{studentId}/passport/{passportId}")
+    public Student assignPassportToStudent(
+        @PathVariable Integer studentId,
+        @PathVariable Long passportId) 
+        {
+            return studentService.assignPassportToStudent(studentId, passportId);
+        }
 }

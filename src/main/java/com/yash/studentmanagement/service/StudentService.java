@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.yash.studentmanagement.entity.Passport;
 import com.yash.studentmanagement.entity.Student;
 import com.yash.studentmanagement.exception.ResourceNotFoundException;
+import com.yash.studentmanagement.repository.PassportRepository;
 import com.yash.studentmanagement.repository.StudentRepository;
 
 @Service
@@ -17,11 +19,14 @@ public class StudentService
 {
 
     private final StudentRepository studentRepository;
+    private final PassportRepository passportRepository;
 
-    public StudentService(StudentRepository studentRepository) 
+    public StudentService(StudentRepository studentRepository, PassportRepository passportRepository) 
     {
         this.studentRepository = studentRepository;
+        this.passportRepository = passportRepository;
     }
+
 
     public Student saveStudent(Student student) 
     {
@@ -38,19 +43,12 @@ public class StudentService
     public Student updateStudent(Integer id, Student updatedStudent) 
     {
 
-    Student existingStudent = studentRepository.findById(id).orElse(null);
+    Student existingStudent = studentRepository.findById(id).orElseThrow(() ->
+    new ResourceNotFoundException("Student not found with ID: " + id));
+    existingStudent.setName(updatedStudent.getName());
+    existingStudent.setAge(updatedStudent.getAge());
 
-    if (existingStudent != null) 
-    {
-
-        existingStudent.setName(updatedStudent.getName());
-
-        existingStudent.setAge(updatedStudent.getAge());
-
-        return studentRepository.save(existingStudent);
-    }
-
-    return null;
+    return studentRepository.save(existingStudent);
     }
     public void deleteStudent(Integer id) 
     {
@@ -91,5 +89,78 @@ public class StudentService
     public List<Student> getStudentsByAgeLessThan(Integer age) 
     {
     return studentRepository.findByAgeLessThan(age);
+    }
+    public List<Student> getAllStudentsJPQL() 
+    {
+    return studentRepository.getAllStudentsJPQL();
+    }
+
+    public List<Student> findStudentByName(String name) 
+    {
+    return studentRepository.findStudentByName(name);
+    }   
+
+    public List<Student> searchStudent(String keyword) 
+    {
+    return studentRepository.searchStudent(keyword);
+    }
+
+    public List<Student> findStudentsAgeGreaterThan(int age) 
+    {
+    return studentRepository.findStudentsAgeGreaterThan(age);
+    }
+
+    public List<Student> findStudentsAgeLessThan(int age) 
+    {
+    return studentRepository.findStudentsAgeLessThan(age);
+    }
+    public List<Student> findStudentByNamePosition(String name) 
+    {
+    return studentRepository.findStudentByNamePosition(name);
+    }
+
+    public List<Student> getStudentsOrderByAgeDesc() 
+    {
+    return studentRepository.getStudentsOrderByAgeDesc();
+    }
+
+    public long countStudents() 
+    {
+    return studentRepository.countStudents();
+    }
+
+    public Integer getMaximumAge() 
+    {
+    return studentRepository.getMaximumAge();
+    }
+
+    public Integer getMinimumAge() 
+    {
+    return studentRepository.getMinimumAge();
+    }
+
+    public Double getAverageAge() 
+    {
+    return studentRepository.getAverageAge();
+    }
+    public int updateStudentAge(Integer id, Integer age) 
+    {
+    return studentRepository.updateStudentAge(id, age);
+    }
+
+    public int deleteStudentsAgeLessThan(Integer age) 
+    {
+    return studentRepository.deleteStudentsAgeLessThan(age);
+    }
+
+    public Student assignPassportToStudent(Integer studentId, Long passportId)
+    {
+    Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+
+    Passport passport = passportRepository.findById(passportId).orElseThrow(() -> new ResourceNotFoundException("Passport not found with ID: " + passportId));
+
+    student.setPassport(passport);
+
+    return studentRepository.save(student);
     }
 }
