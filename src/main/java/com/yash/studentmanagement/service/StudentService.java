@@ -8,10 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.yash.studentmanagement.entity.Course;
 import com.yash.studentmanagement.entity.Department;
 import com.yash.studentmanagement.entity.Passport;
 import com.yash.studentmanagement.entity.Student;
 import com.yash.studentmanagement.exception.ResourceNotFoundException;
+import com.yash.studentmanagement.repository.CourseRepository;
 import com.yash.studentmanagement.repository.DepartmentRepository;
 import com.yash.studentmanagement.repository.PassportRepository;
 import com.yash.studentmanagement.repository.StudentRepository;
@@ -23,12 +25,14 @@ public class StudentService
     private final StudentRepository studentRepository;
     private final PassportRepository passportRepository;
     private final DepartmentRepository departmentRepository;
+    private final CourseRepository courseRepository;
 
-    public StudentService(StudentRepository studentRepository, PassportRepository passportRepository, DepartmentRepository departmentRepository) 
+    public StudentService(StudentRepository studentRepository, PassportRepository passportRepository, DepartmentRepository departmentRepository, CourseRepository courseRepository) 
     {
         this.studentRepository = studentRepository;
         this.passportRepository = passportRepository;
         this.departmentRepository = departmentRepository;
+        this.courseRepository = courseRepository;
     }
 
 
@@ -178,5 +182,25 @@ public class StudentService
     student.setDepartment(department);
 
     return studentRepository.save(student);
+    }
+
+    public Student enrollCourse(Integer studentId, Long courseId) 
+    {
+
+    Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + studentId));
+
+    Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found with id " + courseId));
+
+    student.getCourses().add(course);
+
+    return studentRepository.save(student);
+    }
+
+    public Student removeCourse(Integer studentId, Long courseId) 
+    {
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + studentId));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found with id " + courseId));
+        student.getCourses().remove(course);
+        return studentRepository.save(student);
     }
 }

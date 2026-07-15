@@ -196,4 +196,16 @@ public class StudentController
     {
         return studentService.assignDepartment(studentId, departmentId);
     }
+
+    @PostMapping("/{studentId}/courses/{courseId}")
+    public Student enrollCourse(@PathVariable Integer studentId, @PathVariable Long courseId) 
+    {
+        return studentService.enrollCourse(studentId, courseId);
+    }
+
+    @DeleteMapping("/{studentId}/courses/{courseId}")
+    public Student removeCourse(@PathVariable Integer studentId, @PathVariable Long courseId) 
+    {
+        return studentService.removeCourse(studentId, courseId);
+    }
 }
