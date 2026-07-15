@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -86,5 +87,18 @@ public class Student
     public void setPassport(Passport passport) 
     {
     this.passport = passport;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+    public Department getDepartment() 
+    {
+    return department;
+    }
+
+    public void setDepartment(Department department) 
+    {
+    this.department = department;
     }
 }

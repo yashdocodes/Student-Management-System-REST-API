@@ -186,10 +186,14 @@ public class StudentController
     }
 
     @PutMapping("/{studentId}/passport/{passportId}")
-    public Student assignPassportToStudent(
-        @PathVariable Integer studentId,
-        @PathVariable Long passportId) 
-        {
-            return studentService.assignPassportToStudent(studentId, passportId);
-        }
+    public Student assignPassportToStudent(@PathVariable Integer studentId, @PathVariable Long passportId) 
+    {
+        return studentService.assignPassportToStudent(studentId, passportId);
+    }
+
+    @PutMapping("/{studentId}/department/{departmentId}")
+    public Student assignDepartment(@PathVariable Integer studentId, @PathVariable Long departmentId) 
+    {
+        return studentService.assignDepartment(studentId, departmentId);
+    }
 }

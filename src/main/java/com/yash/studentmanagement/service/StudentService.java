@@ -8,9 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.yash.studentmanagement.entity.Department;
 import com.yash.studentmanagement.entity.Passport;
 import com.yash.studentmanagement.entity.Student;
 import com.yash.studentmanagement.exception.ResourceNotFoundException;
+import com.yash.studentmanagement.repository.DepartmentRepository;
 import com.yash.studentmanagement.repository.PassportRepository;
 import com.yash.studentmanagement.repository.StudentRepository;
 
@@ -20,11 +22,13 @@ public class StudentService
 
     private final StudentRepository studentRepository;
     private final PassportRepository passportRepository;
+    private final DepartmentRepository departmentRepository;
 
-    public StudentService(StudentRepository studentRepository, PassportRepository passportRepository) 
+    public StudentService(StudentRepository studentRepository, PassportRepository passportRepository, DepartmentRepository departmentRepository) 
     {
         this.studentRepository = studentRepository;
         this.passportRepository = passportRepository;
+        this.departmentRepository = departmentRepository;
     }
 
 
@@ -160,6 +164,18 @@ public class StudentService
     Passport passport = passportRepository.findById(passportId).orElseThrow(() -> new ResourceNotFoundException("Passport not found with ID: " + passportId));
 
     student.setPassport(passport);
+
+    return studentRepository.save(student);
+    }
+
+    public Student assignDepartment(Integer studentId, Long departmentId) 
+    {
+
+    Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+
+    Department department = departmentRepository.findById(departmentId).orElseThrow(() -> new ResourceNotFoundException("Department not found"));
+
+    student.setDepartment(department);
 
     return studentRepository.save(student);
     }
