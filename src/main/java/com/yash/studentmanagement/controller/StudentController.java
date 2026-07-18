@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yash.studentmanagement.dto.StudentRequestDTO;
+import com.yash.studentmanagement.dto.StudentResponseDTO;
 import com.yash.studentmanagement.entity.Student;
 import com.yash.studentmanagement.service.StudentService;
 
@@ -31,9 +33,9 @@ public class StudentController
     }
 
     @PostMapping
-    public Student saveStudent(@Valid @RequestBody Student student) 
+    public StudentResponseDTO createStudent(@Valid @RequestBody StudentRequestDTO requestDTO) 
     {
-    return studentService.saveStudent(student);
+        return studentService.createStudent(requestDTO);
     }
     @GetMapping("/page")
     public Page<Student> getStudents(
@@ -45,21 +47,20 @@ public class StudentController
     return studentService.getStudents(page, size, sortBy, direction);
     }
     @GetMapping
-    public List<Student> getAllStudents()
+    public List<StudentResponseDTO> getAllStudents() 
     {
-    return studentService.getAllStudents();
+        return studentService.getAllStudents();
     }
     @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable Integer id) 
+    public StudentResponseDTO getStudentById(@PathVariable Integer id) 
     {
-    return studentService.getStudentById(id);
+        return studentService.getStudentById(id);
     }
     @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable Integer id,
-                            @Valid @RequestBody Student student) 
-                            {
-                                return studentService.updateStudent(id, student);
-                            }
+    public StudentResponseDTO updateStudent(@PathVariable Integer id, @Valid @RequestBody StudentRequestDTO requestDTO) 
+    {
+        return studentService.updateStudent(id, requestDTO);
+    }
     @DeleteMapping("/{id}")
     public void deleteStudent(@PathVariable Integer id) 
     {

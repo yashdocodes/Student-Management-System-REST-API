@@ -1,6 +1,7 @@
 package com.yash.studentmanagement.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,6 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.yash.studentmanagement.dto.CourseResponseDTO;
+import com.yash.studentmanagement.dto.DepartmentResponseDTO;
+import com.yash.studentmanagement.dto.PassportResponseDTO;
+import com.yash.studentmanagement.dto.StudentRequestDTO;
+import com.yash.studentmanagement.dto.StudentResponseDTO;
 import com.yash.studentmanagement.entity.Course;
 import com.yash.studentmanagement.entity.Department;
 import com.yash.studentmanagement.entity.Passport;
@@ -36,164 +42,151 @@ public class StudentService
     }
 
 
-    public Student saveStudent(Student student) 
+    public StudentResponseDTO createStudent(StudentRequestDTO requestDTO) 
     {
-        return studentRepository.save(student);
+        Student student = convertToEntity(requestDTO);
+        Student savedStudent = studentRepository.save(student);
+        return convertToResponseDTO(savedStudent);
     }
-    public List<Student> getAllStudents() 
+    public List<StudentResponseDTO> getAllStudents() 
     {
-        return studentRepository.findAll();
+        List<Student> students = studentRepository.findAll();
+        return students.stream().map(this::convertToResponseDTO).toList();
     }
-    public Student getStudentById(Integer id) 
+    public StudentResponseDTO getStudentById(Integer id) 
     {
-    return studentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + id));
+        Student student = studentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+        return convertToResponseDTO(student);
     }
-    public Student updateStudent(Integer id, Student updatedStudent) 
+    public StudentResponseDTO updateStudent(Integer id, StudentRequestDTO requestDTO) 
     {
-
-    Student existingStudent = studentRepository.findById(id).orElseThrow(() ->
-    new ResourceNotFoundException("Student not found with ID: " + id));
-    existingStudent.setName(updatedStudent.getName());
-    existingStudent.setAge(updatedStudent.getAge());
-
-    return studentRepository.save(existingStudent);
+        Student student = studentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+        student.setName(requestDTO.getName());
+        student.setAge(requestDTO.getAge());
+        Student updatedStudent = studentRepository.save(student);
+        return convertToResponseDTO(updatedStudent);
     }
     public void deleteStudent(Integer id) 
     {
-    studentRepository.deleteById(id);
+        studentRepository.deleteById(id);
     }
     public Page<Student> getStudents(int page, int size, String sortBy, String direction)
     {
-    Pageable pageable = PageRequest.of(
-        page,
-        size,
-        Sort.by(Sort.Direction.fromString(direction), sortBy)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy)
     );
-
     return studentRepository.findAll(pageable);
     }
     public List<Student> searchStudentByName(String name) 
     {
-    return studentRepository.findByName(name);
+        return studentRepository.findByName(name);
     }
     public List<Student> searchStudentByNameContaining(String name) 
     {
-    return studentRepository.findByNameContaining(name);
+        return studentRepository.findByNameContaining(name);
     }
     public List<Student> searchStudentByNameContainingIgnoreCase(String name) 
     {
-    return studentRepository.findByNameContainingIgnoreCase(name);
+        return studentRepository.findByNameContainingIgnoreCase(name);
     }
     public List<Student> getStudentsByAge(Integer age) 
     {
-    return studentRepository.findByAge(age);
+        return studentRepository.findByAge(age);
     }
 
     public List<Student> getStudentsByAgeGreaterThan(Integer age) 
     {
-    return studentRepository.findByAgeGreaterThan(age);
+        return studentRepository.findByAgeGreaterThan(age);
     }
 
     public List<Student> getStudentsByAgeLessThan(Integer age) 
     {
-    return studentRepository.findByAgeLessThan(age);
+        return studentRepository.findByAgeLessThan(age);
     }
     public List<Student> getAllStudentsJPQL() 
     {
-    return studentRepository.getAllStudentsJPQL();
+        return studentRepository.getAllStudentsJPQL();
     }
 
     public List<Student> findStudentByName(String name) 
     {
-    return studentRepository.findStudentByName(name);
+        return studentRepository.findStudentByName(name);
     }   
 
     public List<Student> searchStudent(String keyword) 
     {
-    return studentRepository.searchStudent(keyword);
+        return studentRepository.searchStudent(keyword);
     }
 
     public List<Student> findStudentsAgeGreaterThan(int age) 
     {
-    return studentRepository.findStudentsAgeGreaterThan(age);
+        return studentRepository.findStudentsAgeGreaterThan(age);
     }
 
     public List<Student> findStudentsAgeLessThan(int age) 
     {
-    return studentRepository.findStudentsAgeLessThan(age);
+        return studentRepository.findStudentsAgeLessThan(age);
     }
     public List<Student> findStudentByNamePosition(String name) 
     {
-    return studentRepository.findStudentByNamePosition(name);
+        return studentRepository.findStudentByNamePosition(name);
     }
 
     public List<Student> getStudentsOrderByAgeDesc() 
     {
-    return studentRepository.getStudentsOrderByAgeDesc();
+        return studentRepository.getStudentsOrderByAgeDesc();
     }
 
     public long countStudents() 
     {
-    return studentRepository.countStudents();
+        return studentRepository.countStudents();
     }
 
     public Integer getMaximumAge() 
     {
-    return studentRepository.getMaximumAge();
+        return studentRepository.getMaximumAge();
     }
 
     public Integer getMinimumAge() 
     {
-    return studentRepository.getMinimumAge();
+        return studentRepository.getMinimumAge();
     }
 
     public Double getAverageAge() 
     {
-    return studentRepository.getAverageAge();
+        return studentRepository.getAverageAge();
     }
     public int updateStudentAge(Integer id, Integer age) 
     {
-    return studentRepository.updateStudentAge(id, age);
+        return studentRepository.updateStudentAge(id, age);
     }
 
     public int deleteStudentsAgeLessThan(Integer age) 
     {
-    return studentRepository.deleteStudentsAgeLessThan(age);
+        return studentRepository.deleteStudentsAgeLessThan(age);
     }
 
     public Student assignPassportToStudent(Integer studentId, Long passportId)
     {
-    Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
-
-    Passport passport = passportRepository.findById(passportId).orElseThrow(() -> new ResourceNotFoundException("Passport not found with ID: " + passportId));
-
-    student.setPassport(passport);
-
-    return studentRepository.save(student);
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+        Passport passport = passportRepository.findById(passportId).orElseThrow(() -> new ResourceNotFoundException("Passport not found with ID: " + passportId));
+        student.setPassport(passport);
+        return studentRepository.save(student);
     }
 
     public Student assignDepartment(Integer studentId, Long departmentId) 
     {
-
-    Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found"));
-
-    Department department = departmentRepository.findById(departmentId).orElseThrow(() -> new ResourceNotFoundException("Department not found"));
-
-    student.setDepartment(department);
-
-    return studentRepository.save(student);
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+        Department department = departmentRepository.findById(departmentId).orElseThrow(() -> new ResourceNotFoundException("Department not found"));
+        student.setDepartment(department);
+        return studentRepository.save(student);
     }
 
     public Student enrollCourse(Integer studentId, Long courseId) 
     {
-
-    Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + studentId));
-
-    Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found with id " + courseId));
-
-    student.getCourses().add(course);
-
-    return studentRepository.save(student);
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + studentId));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found with id " + courseId));
+        student.getCourses().add(course);
+        return studentRepository.save(student);
     }
 
     public Student removeCourse(Integer studentId, Long courseId) 
@@ -202,5 +195,63 @@ public class StudentService
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found with id " + courseId));
         student.getCourses().remove(course);
         return studentRepository.save(student);
+    }
+
+    private Student convertToEntity(StudentRequestDTO dto) 
+    {
+        Student student = new Student();
+        student.setName(dto.getName());
+        student.setAge(dto.getAge());
+        return student;
+    }
+
+    private StudentResponseDTO convertToResponseDTO(Student student) 
+    {
+
+    StudentResponseDTO dto = new StudentResponseDTO();
+
+    dto.setId(student.getId());
+    dto.setName(student.getName());
+    dto.setAge(student.getAge());
+
+    // Passport Mapping
+    if (student.getPassport() != null) {
+
+        PassportResponseDTO passportDTO = new PassportResponseDTO();
+
+        passportDTO.setId(student.getPassport().getId());
+        passportDTO.setPassportNumber(student.getPassport().getPassportNumber());
+
+        dto.setPassport(passportDTO);
+    }
+
+    // Department Mapping
+    if (student.getDepartment() != null) 
+    {
+
+        DepartmentResponseDTO departmentDTO = new DepartmentResponseDTO();
+
+        departmentDTO.setId(student.getDepartment().getId());
+        departmentDTO.setName(student.getDepartment().getName());
+
+        dto.setDepartment(departmentDTO);
+    }
+
+    // Courses Mapping
+    if (student.getCourses() != null) 
+    {
+
+        List<CourseResponseDTO> courseDTOs = student.getCourses().stream().map(course -> 
+        {
+            CourseResponseDTO courseDTO = new CourseResponseDTO();
+            courseDTO.setId(course.getId());
+            courseDTO.setCourseName(course.getCourseName());
+            courseDTO.setDuration(course.getDuration());
+            return courseDTO;
+        })
+        .collect(Collectors.toList());
+        dto.setCourses(courseDTOs);
+    }
+    return dto;
     }
 }
