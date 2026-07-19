@@ -15,37 +15,31 @@ import com.yash.studentmanagement.service.DepartmentService;
 
 @RestController
 @RequestMapping("/departments")
-public class DepartmentController 
-{
+public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    public DepartmentController(DepartmentService departmentService) 
-    {
+    public DepartmentController(DepartmentService departmentService) {
         this.departmentService = departmentService;
     }
 
     @PostMapping
-    public Department saveDepartment(@RequestBody Department department) 
-    {
+    public Department saveDepartment(@RequestBody Department department) {
         return departmentService.saveDepartment(department);
     }
 
     @GetMapping
-    public List<Department> getAllDepartments() 
-    {
+    public List<Department> getAllDepartments() {
         return departmentService.getAllDepartments();
     }
 
     @GetMapping("/{id}")
-    public Department getDepartmentById(@PathVariable Long id) 
-    {
+    public Department getDepartmentById(@PathVariable Long id) {
         return departmentService.getDepartmentById(id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDepartment(@PathVariable Long id) 
-    {
+    public void deleteDepartment(@PathVariable Long id) {
         departmentService.deleteDepartment(id);
     }
 }

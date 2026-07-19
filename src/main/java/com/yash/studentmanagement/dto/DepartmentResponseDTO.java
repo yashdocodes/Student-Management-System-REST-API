@@ -1,38 +1,31 @@
 package com.yash.studentmanagement.dto;
 
-public class DepartmentResponseDTO 
-{
+public class DepartmentResponseDTO {
 
     private Long id;
     private String name;
 
-    public DepartmentResponseDTO() 
-    {
+    public DepartmentResponseDTO() {
     }
 
-    public DepartmentResponseDTO(Long id, String name) 
-    {
+    public DepartmentResponseDTO(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() 
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id) 
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() 
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name) 
-    {
+    public void setName(String name) {
         this.name = name;
     }
 }

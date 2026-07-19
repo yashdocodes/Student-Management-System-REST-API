@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler 
-{
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
-
 
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
@@ -26,18 +24,18 @@ public class GlobalExceptionHandler
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) 
-    {
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
-    Map<String, String> errors = new HashMap<>();
+        Map<String, String> errors = new HashMap<>();
 
-    ex.getBindingResult().getFieldErrors().forEach(error -> 
-    {
-        errors.put(error.getField(), error.getDefaultMessage());
-    });
+        ex.getBindingResult().getFieldErrors().forEach(error
+                -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
 
-    return ResponseEntity.badRequest().body(errors);
+        return ResponseEntity.badRequest().body(errors);
     }
 
 }

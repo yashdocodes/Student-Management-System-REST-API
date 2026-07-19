@@ -8,33 +8,27 @@ import com.yash.studentmanagement.entity.Course;
 import com.yash.studentmanagement.repository.CourseRepository;
 
 @Service
-public class CourseService 
-{
+public class CourseService {
 
     private final CourseRepository courseRepository;
 
-    public CourseService(CourseRepository courseRepository)
-    {
+    public CourseService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
-    public Course saveCourse(Course course)
-    {
+    public Course saveCourse(Course course) {
         return courseRepository.save(course);
     }
 
-    public List<Course> getAllCourses()
-    {
+    public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
-    public Course getCourseById(Long id)
-    {
+    public Course getCourseById(Long id) {
         return courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course not found"));
     }
 
-    public Course updateCourse(Long id, Course updatedCourse)
-    {
+    public Course updateCourse(Long id, Course updatedCourse) {
 
         Course course = getCourseById(id);
 
@@ -44,8 +38,7 @@ public class CourseService
         return courseRepository.save(course);
     }
 
-    public void deleteCourse(Long id)
-    {
+    public void deleteCourse(Long id) {
 
         Course course = getCourseById(id);
 
