@@ -3,6 +3,7 @@ package com.yash.studentmanagement.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,13 +33,16 @@ public class StudentService
     private final PassportRepository passportRepository;
     private final DepartmentRepository departmentRepository;
     private final CourseRepository courseRepository;
+    private final ModelMapper modelMapper;
 
-    public StudentService(StudentRepository studentRepository, PassportRepository passportRepository, DepartmentRepository departmentRepository, CourseRepository courseRepository) 
+    public StudentService(StudentRepository studentRepository, PassportRepository passportRepository, 
+    DepartmentRepository departmentRepository, CourseRepository courseRepository, ModelMapper modelMapper) 
     {
         this.studentRepository = studentRepository;
         this.passportRepository = passportRepository;
         this.departmentRepository = departmentRepository;
         this.courseRepository = courseRepository;
+        this.modelMapper = modelMapper;
     }
 
 
@@ -197,22 +201,15 @@ public class StudentService
         return studentRepository.save(student);
     }
 
-    private Student convertToEntity(StudentRequestDTO dto) 
+    private Student convertToEntity(StudentRequestDTO requestDTO) 
     {
-        Student student = new Student();
-        student.setName(dto.getName());
-        student.setAge(dto.getAge());
-        return student;
-    }
+        return modelMapper.map(requestDTO, Student.class);
+    } 
 
     private StudentResponseDTO convertToResponseDTO(Student student) 
     {
 
-    StudentResponseDTO dto = new StudentResponseDTO();
-
-    dto.setId(student.getId());
-    dto.setName(student.getName());
-    dto.setAge(student.getAge());
+    StudentResponseDTO dto = modelMapper.map(student, StudentResponseDTO.class);
 
     // Passport Mapping
     if (student.getPassport() != null) {
@@ -251,7 +248,6 @@ public class StudentService
         })
         .collect(Collectors.toList());
         dto.setCourses(courseDTOs);
-    }
-    return dto;
+    }return dto;
     }
 }
